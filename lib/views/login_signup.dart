@@ -39,7 +39,6 @@ class login_signup_state extends State<login_signup>{
         h3 = MediaQuery.of(context).size.height*0.33;
         display_text = true;
       }
-      print("hello");
     });
   }
 
@@ -385,6 +384,14 @@ class login_signup_state extends State<login_signup>{
                                               begin: FractionalOffset.topLeft,
                                               end: FractionalOffset.bottomRight,
                                             ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.deepPurpleAccent,
+                                                blurRadius: 10,
+                                                spreadRadius: 0.1,
+                                                offset: Offset(0,3),
+                                              ),
+                                            ],
                                           ),
                                           child: TextButton(
                                             child: Text(
