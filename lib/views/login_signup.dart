@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class login_signup extends StatefulWidget{
   login_signup_state createState() => login_signup_state();
@@ -6,12 +7,12 @@ class login_signup extends StatefulWidget{
 
 class login_signup_state extends State<login_signup>{
 
-  TextEditingController _txt1 = new TextEditingController();
-  TextEditingController _txt2 = new TextEditingController();
-  TextEditingController _username = new TextEditingController();
-  TextEditingController _password = new TextEditingController();
-  TextEditingController _email = new TextEditingController();
-  TextEditingController _contact = new TextEditingController();
+  TextEditingController _txt1 = TextEditingController();
+  TextEditingController _txt2 = TextEditingController();
+  TextEditingController _username = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _contact = TextEditingController();
   FocusNode fnode1 = FocusNode();
   FocusNode fnode2 = FocusNode();
   FocusNode fnode3 = FocusNode();
@@ -21,8 +22,38 @@ class login_signup_state extends State<login_signup>{
   FocusNode contact = FocusNode();
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
-  late double h1,h2,h3; // this will be used for setting margin over waves different
-  bool first_pane= true,onstart=true,display_text=true; // true if first page is open, false if close
+  late double h1,h2,h3; // this will be used for setting margin over waves
+  bool first_pane= true,onstart=true,display_text=true;// true if first page is open, false if close. onstart is only set once
+  bool visibility = true,visibility2 = true;
+
+  String? _validateEmail(String? value){
+    if(value!.isEmpty){
+      return "Please enter an email id";
+    }
+    String email_format = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}"+          //Regular Expression to match the email id
+        "\\@""[a-zA-Z0-9\\-]{0,64}"+
+        "(""\\.""[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}"+")+";
+    RegExp regEx = new RegExp(email_format);
+
+    if(regEx.hasMatch(value)){
+        return null;
+    }
+    return "Please Enter a valid Email-id";
+  }
+
+  void _pass_vis() {
+    setState(() {
+      visibility = !visibility;
+    });
+  }
+
+  void _pass_vis2() {
+    setState(() {
+      visibility2 = !visibility2;
+    });
+  }
+
+  // This method will change the size of containers to show different page
 
   void change_size(){
     setState(() {
@@ -153,7 +184,7 @@ class login_signup_state extends State<login_signup>{
                                           IconButton(onPressed: (){
                                             FocusScope.of(context).requestFocus(fnode1);
                                             change_size();
-                                            }, icon: Icon(Icons.arrow_back_ios)),
+                                            }, icon: Icon(Icons.arrow_back_ios),color: Colors.white,),
                                         ],
                                       ),
                                       Padding(
@@ -162,12 +193,13 @@ class login_signup_state extends State<login_signup>{
                                       ),
                                       Row(
                                         children: [
-                                          Text("Username"),
+                                          Text("Username",style: TextStyle(color: Colors.white,fontSize: 15),),
                                         ],
                                       ),
                                       TextFormField(
                                         controller:_username,
                                         focusNode: uname,
+                                        keyboardType: TextInputType.name,
                                         autovalidateMode: AutovalidateMode.onUserInteraction,
                                         onFieldSubmitted: (value){
                                           FocusScope.of(context).requestFocus(password);
@@ -178,21 +210,27 @@ class login_signup_state extends State<login_signup>{
                                           }
                                           return null;
                                         },
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: "Enter user name",
-
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                          ),
+                                          hintStyle: TextStyle(color: Colors.grey[400]),
                                         ),
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                       const SizedBox(height: 50,),
                                       Row(
                                         children: [
-                                          Text("Password"),
+                                          Text("Password",style: TextStyle(color: Colors.white,fontSize: 15),),
                                         ],
                                       ),
                                       TextFormField(
                                         controller:_password,
                                         focusNode: password,
+                                        obscureText: visibility,
                                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        style: TextStyle(color: Colors.white),
                                         onFieldSubmitted: (value){
                                           FocusScope.of(context).requestFocus(email);
                                         },
@@ -204,59 +242,76 @@ class login_signup_state extends State<login_signup>{
                                           }
                                           return null;
                                         },
-                                        decoration: const InputDecoration(
+                                        decoration:  InputDecoration(
                                           hintText: "Enter Password",
-
+                                          fillColor: Colors.white,
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                          ),
+                                          hintStyle: TextStyle(color: Colors.grey[400]),
+                                          suffixIcon: IconButton(onPressed: _pass_vis, icon: Icon(Icons.remove_red_eye),color: Colors.white,),
                                         ),
                                       ),
                                       const SizedBox(height: 50,),
                                       Row(
                                         children: [
-                                          Text("Email"),
+                                          Text("Email",style: TextStyle(color: Colors.white,fontSize: 15),),
                                         ],
                                       ),
                                       TextFormField(
                                         controller:_email,
                                         focusNode: email,
+                                        keyboardType: TextInputType.emailAddress,
                                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        style: TextStyle(color: Colors.white),
                                         onFieldSubmitted: (value){
                                           FocusScope.of(context).requestFocus(contact);
                                         },
-                                        validator: (value){
-                                          if(value == null || value.isEmpty){
-                                            return "Please enter a valid Email-id";
-                                          }
-                                          return null;
-                                        },
-                                        decoration: const InputDecoration(
+                                        validator: _validateEmail,
+                                        decoration: InputDecoration(
                                           hintText: "Enter an Email Id",
-
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                          ),
+                                          hintStyle: TextStyle(color: Colors.grey[400]),
                                         ),
                                       ),
                                       const SizedBox(height: 50,),
                                       Row(
                                         children: [
-                                          Text("Contact"),
+                                          Text("Contact",style: TextStyle(color: Colors.white,fontSize: 15),),
                                         ],
                                       ),
                                       TextFormField(
                                         controller:_contact,
                                         focusNode: contact,
                                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        keyboardType: TextInputType.phone,
+                                        maxLines: 1,
+                                        maxLength: 10,
+                                        style: TextStyle(color: Colors.white),
+                                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                         onFieldSubmitted: (value){
                                           FocusScope.of(context).requestFocus(fnode3);
                                         },
                                         validator: (value){
                                           if(value == null || value.isEmpty){
                                             return "Please enter a valid Contact number.";
+                                          }else if(value.length < 10){
+                                            return "Please Enter a valid phone number";
+                                          }else{
+                                            return null;
                                           }
-                                          return null;
                                         },
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: "Enter Contact",
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                          ),
+                                          hintStyle: TextStyle(color: Colors.grey[400]),
                                         ),
                                       ),
-                                      const SizedBox(height: 50,),
+                                      const SizedBox(height: 20,),
                                       Container(
                                         margin: EdgeInsets.all(20),
                                         width: double.infinity,
@@ -273,7 +328,11 @@ class login_signup_state extends State<login_signup>{
                                             'Submit',
                                             style: TextStyle(color: Colors.white),
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            if(_formKey2.currentState!.validate()){
+                                              print("Everything is OK!!");
+                                            }
+                                          },
                                         ),
                                       ),
                                     ],
@@ -338,15 +397,15 @@ class login_signup_state extends State<login_signup>{
                                             Text("Username"),
                                           ],
                                         ),
-                                        TextField(
+                                        TextFormField(
                                           controller: _txt1,
                                           focusNode: fnode1,
-                                          onSubmitted: (value){
+                                          onFieldSubmitted: (value){
                                             FocusScope.of(context).requestFocus(fnode2);
                                           },
+                                          validator: _validateEmail,
                                           decoration: const InputDecoration(
-                                            hintText: "Enter username / Email-id",
-
+                                            hintText: "Enter Email-id",
                                           ),
                                         ),
                                         const SizedBox(height: 30,),
@@ -358,20 +417,22 @@ class login_signup_state extends State<login_signup>{
                                         TextFormField(
                                           controller:_txt2,
                                           focusNode: fnode2,
-                                          obscureText: true,
-                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          obscureText: visibility2,
+                                          autovalidateMode: AutovalidateMode.disabled,
                                           onFieldSubmitted: (value){
                                             FocusScope.of(context).requestFocus(fnode3);
                                           },
                                           validator: (value){
                                             if(value == null || value.isEmpty){
                                               return "Please enter a valid password";
+                                            }else if(value.length < 8){
+                                              return "Please enter a valid password";
                                             }
                                             return null;
                                           },
-                                          decoration: const InputDecoration(
+                                          decoration: InputDecoration(
                                             hintText: "Enter Password",
-
+                                            suffixIcon: IconButton(onPressed: _pass_vis2, icon: Icon(Icons.remove_red_eye),),
                                           ),
                                         ),
                                         Container(
@@ -399,6 +460,9 @@ class login_signup_state extends State<login_signup>{
                                               style: TextStyle(color: Colors.white),
                                             ),
                                             onPressed: () {
+                                              if(_formKey.currentState!.validate()){
+                                                print("Everything is OK!!");
+                                              }
                                             },
                                           ),
                                         ),
@@ -447,7 +511,7 @@ class login_signup_state extends State<login_signup>{
 }
 
 class draw_curve extends CustomPainter{
-  Color background_color;
+  Color background_color;  // Specify the color of wave
 
   draw_curve({required this.background_color});
 
@@ -461,11 +525,6 @@ class draw_curve extends CustomPainter{
       path.moveTo(0, size.height*0.9);
       path.cubicTo(0, size.height, size.width*-0.15, size.height*-0.3, size.width*0.45, size.height*0.65);   //This will create first arc
       path.cubicTo(size.width*0.75, size.height*0.9, size.width*0.85, size.height*-0.3, size.width, size.height*0.8); //For second arc.
-      //path.quadraticBezierTo(size.width * 0.15, size.height * 0.1,
-          //size.width * 0.4, size.height*0.9);
-      //path.moveTo(size.width*0.45, size.height);
-      //path.quadraticBezierTo(size.width* 0.55, size.height * 0.05,
-         // size.width*1.0, size.height*0.9);
       path.lineTo(size.width, size.height);
       path.lineTo(0, size.height);
 
