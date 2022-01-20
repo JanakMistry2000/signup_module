@@ -10,7 +10,7 @@ This project is a for sign-up module for Ch-4 Flutter basics Practical.
 
 This design of login and sign up module is inspired from this https://www.studioamigos.com/login-animation-studio/
 
-#
+
 
 
 
