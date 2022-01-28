@@ -1,102 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:signup_module/colors.dart';
+import 'package:signup_module/components/wave.dart';
+import 'package:signup_module/images.dart';
+import 'package:signup_module/strings.dart';
 
-class login_signup extends StatefulWidget{
-  login_signup_state createState() => login_signup_state();
+class LoginSignup extends StatefulWidget {
+  const LoginSignup({Key? key}) : super(key: key);
+
+  @override
+  LoginSignupState createState() => LoginSignupState();
 }
 
-class login_signup_state extends State<login_signup>{
+class LoginSignupState extends State<LoginSignup> {
+  final TextEditingController _usernamelogin = TextEditingController();
+  final TextEditingController _passwordlogin = TextEditingController();
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _contact = TextEditingController();
+  FocusNode emailLogin = FocusNode();
+  FocusNode passwordLogin = FocusNode();
+  FocusNode submitLogin = FocusNode();
+  FocusNode unameSignup = FocusNode();
+  FocusNode passwordSignup = FocusNode();
+  FocusNode emailSignup = FocusNode();
+  FocusNode contactSignup = FocusNode();
+  final _loginFormKey = GlobalKey<FormState>();
+  final _signupFormKey = GlobalKey<FormState>();
+  late double h1, h2, h3;
 
-  TextEditingController _txt1 = TextEditingController();
-  TextEditingController _txt2 = TextEditingController();
-  TextEditingController _username = TextEditingController();
-  TextEditingController _password = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _contact = TextEditingController();
-  FocusNode fnode1 = FocusNode();
-  FocusNode fnode2 = FocusNode();
-  FocusNode fnode3 = FocusNode();
-  FocusNode uname = FocusNode();
-  FocusNode password = FocusNode();
-  FocusNode email = FocusNode();
-  FocusNode contact = FocusNode();
-  final _formKey = GlobalKey<FormState>();
-  final _formKey2 = GlobalKey<FormState>();
-  late double h1,h2,h3; // this will be used for setting margin over waves
-  bool first_pane= true,onstart=true,display_text=true;// true if first page is open, false if close. onstart is only set once
-  bool visibility = true,visibility2 = true;
+  /// this will be used for setting margin over waves
+  bool firstPane = true;
 
-  String? _validateEmail(String? value){
-    if(value!.isEmpty){
-      return "Please enter an email id";
+  /// true if first page is open, false if close.
+  bool onStart = true;
+
+  ///onstart is only set once,
+  bool displayText = true;
+  bool visibilityPassword = true;
+  bool visibilityPassSignup = true;
+  bool keyboardOverlay = false;
+
+  String? _validateEmail(String? value) {
+    if (value!.isEmpty) {
+      return AppStrings.enterValidEmail;
     }
-    String email_format = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}"+          //Regular Expression to match the email id
-        "\\@""[a-zA-Z0-9\\-]{0,64}"+
-        "(""\\.""[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}"+")+";
-    RegExp regEx = new RegExp(email_format);
 
-    if(regEx.hasMatch(value)){
-        return null;
+    RegExp regEx = RegExp(AppStrings.emailFormat);
+
+    if (regEx.hasMatch(value)) {
+      return null;
     }
-    return "Please Enter a valid Email-id";
+    return AppStrings.enterValidEmail;
   }
 
-  void _pass_vis() {
+  void _togglePassword() {
     setState(() {
-      visibility = !visibility;
+      visibilityPassword = !visibilityPassword;
     });
   }
 
-  void _pass_vis2() {
+  void _togglePasswordSignUp() {
     setState(() {
-      visibility2 = !visibility2;
+      visibilityPassSignup = !visibilityPassSignup;
     });
   }
 
-  // This method will change the size of containers to show different page
+  /// This method will change the size of containers to show different page
 
-  void change_size(){
+  void changeSize() {
     setState(() {
-      if(first_pane){
-        first_pane = false;
-        h1 = MediaQuery.of(context).size.height*0.10;
-        h2 = MediaQuery.of(context).size.height*0.12;
+      if (firstPane) {
+        firstPane = false;
+        keyboardOverlay = true;
+        h1 = MediaQuery.of(context).size.height * 0.10;
+        h2 = MediaQuery.of(context).size.height * 0.12;
         h3 = MediaQuery.of(context).size.height;
-        display_text = false;
-      }else{
-        first_pane = true;
-        h1 = MediaQuery.of(context).size.height*0.3;
-        h2 = MediaQuery.of(context).size.height*0.318;
-        h3 = MediaQuery.of(context).size.height*0.33;
-        display_text = true;
+        displayText = false;
+      } else {
+        firstPane = true;
+        keyboardOverlay = false;
+        h1 = MediaQuery.of(context).size.height * 0.3;
+        h2 = MediaQuery.of(context).size.height * 0.318;
+        h3 = MediaQuery.of(context).size.height * 0.33;
+        displayText = true;
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if(onstart){
-      onstart = false;
-      h1 = MediaQuery.of(context).size.height*0.3;
-      h2 = MediaQuery.of(context).size.height*0.318;
-      h3 = MediaQuery.of(context).size.height*0.33;
+    if (onStart) {
+      ///For setting the initial size of each wave
+      onStart = false;
+      h1 = MediaQuery.of(context).size.height * 0.3;
+      h2 = MediaQuery.of(context).size.height * 0.318;
+      h3 = MediaQuery.of(context).size.height * 0.33;
     }
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: keyboardOverlay,
       body: Stack(
         children: [
           SizedBox(
               height: double.infinity,
               width: double.infinity,
-              child: Image.asset("lib/assets/mountain.jpg",fit: BoxFit.fill,)
-          ),
+              child: Image.asset(
+                AppImages.mountain,
+                fit: BoxFit.fill,
+              )),
           Column(
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(25,MediaQuery.of(context).size.height*0.15, 20, 20),
+                padding: EdgeInsets.fromLTRB(
+                    25, MediaQuery.of(context).size.height * 0.15, 20, 20),
                 child: Row(
                   children: [
-                    Text("CHALET",style: TextStyle(fontSize: 30),),
+                    Text(
+                      AppStrings.chalet,
+                      style: const TextStyle(fontSize: 30),
+                    ),
                   ],
                 ),
               ),
@@ -107,29 +130,24 @@ class login_signup_state extends State<login_signup>{
               Expanded(
                 child: AnimatedContainer(
                   margin: EdgeInsets.fromLTRB(0, h1, 0, 0),
-                  //height: 500,
-                  constraints: BoxConstraints.loose(Size(MediaQuery.of(context).size.width,1000)),
-                  //width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
+                  constraints: BoxConstraints.loose(
+                      Size(MediaQuery.of(context).size.width, 1000)),
+                  decoration: const BoxDecoration(
                     color: Colors.transparent,
                   ),
-                  duration: new Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   child: Column(
                     children: [
-                        CustomPaint(
-                            painter: draw_curve(background_color: Colors.deepPurple),
-                            size: Size(MediaQuery.of(context).size.width,50),
-                        ),
+                      CustomPaint(
+                        painter: DrawCurve(backgroundColor: Colors.deepPurple),
+                        size: Size(MediaQuery.of(context).size.width, 50),
+                      ),
                       Expanded(
                         child: Container(
-                          //height: 300,
-                          constraints: BoxConstraints.expand(),
-                          //width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple
-                          ),
-                          child: Column(
-                          ),
+                          constraints: const BoxConstraints.expand(),
+                          decoration:
+                              const BoxDecoration(color: Colors.deepPurple),
+                          child: Column(),
                         ),
                       ),
                     ],
@@ -143,194 +161,262 @@ class login_signup_state extends State<login_signup>{
               Expanded(
                 child: AnimatedContainer(
                   margin: EdgeInsets.fromLTRB(0, h2, 0, 0),
-                  constraints: BoxConstraints.expand(),
-                  //height: 500,
-                  //width: MediaQuery.of(context).size.width,
+                  constraints: const BoxConstraints.expand(),
                   decoration: BoxDecoration(
-                    color: Colors.transparent,
+                    color: AppColor.transparent,
                   ),
-                  duration: new Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   child: Column(
                     children: [
                       CustomPaint(
-                        painter: draw_curve(background_color: Colors.deepPurpleAccent),
-                        size: Size(MediaQuery.of(context).size.width,50),
+                        painter:
+                            DrawCurve(backgroundColor: Colors.deepPurpleAccent),
+                        size: Size(MediaQuery.of(context).size.width, 50),
                       ),
                       Expanded(
                         child: Container(
-                          constraints: BoxConstraints.expand(),
-                          //height: 500,
-                          //width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: Colors.deepPurpleAccent
-                          ),
+                          constraints: const BoxConstraints.expand(),
+                          decoration:
+                              BoxDecoration(color: AppColor.purpleLight),
                           child: SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
                               child: Theme(
                                 data: ThemeData(
-                                  primaryColor: Colors.white,
+                                  primaryColor: AppColor.white,
                                   textTheme: TextTheme(
-                                    bodyText2: TextStyle(color: Colors.white),
+                                    bodyText2: TextStyle(color: AppColor.white),
                                   ),
                                 ),
                                 child: Form(
-                                  key: _formKey2,
+                                  key: _signupFormKey,
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          IconButton(onPressed: (){
-                                            FocusScope.of(context).requestFocus(fnode1);
-                                            change_size();
-                                            }, icon: Icon(Icons.arrow_back_ios),color: Colors.white,),
+                                          IconButton(
+                                            onPressed: () {
+                                              FocusScope.of(context)
+                                                  .requestFocus(emailLogin);
+                                              changeSize();
+                                            },
+                                            icon: const Icon(
+                                                Icons.arrow_back_ios),
+                                            color: AppColor.white,
+                                          ),
                                         ],
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(15.0),
-                                        child: Text("WELCOME!",style: TextStyle(color: Colors.white,fontSize: 35),),
+                                        child: Text(
+                                          AppStrings.welcome,
+                                          style: TextStyle(
+                                              color: AppColor.white,
+                                              fontSize: 35),
+                                        ),
                                       ),
                                       Row(
                                         children: [
-                                          Text("Username",style: TextStyle(color: Colors.white,fontSize: 15),),
+                                          Text(
+                                            AppStrings.username,
+                                            style: TextStyle(
+                                                color: AppColor.white,
+                                                fontSize: 15),
+                                          ),
                                         ],
                                       ),
                                       TextFormField(
-                                        controller:_username,
-                                        focusNode: uname,
+                                        controller: _username,
+                                        focusNode: unameSignup,
                                         keyboardType: TextInputType.name,
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        onFieldSubmitted: (value){
-                                          FocusScope.of(context).requestFocus(password);
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context)
+                                              .requestFocus(passwordSignup);
                                         },
-                                        validator: (value){
-                                          if(value == null || value.isEmpty){
-                                            return "Please enter username";
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return AppStrings
+                                                .enterValidUsername;
                                           }
                                           return null;
                                         },
                                         decoration: InputDecoration(
-                                          hintText: "Enter user name",
+                                          hintText: AppStrings.username,
                                           enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
+                                            borderSide: BorderSide(
+                                                color: AppColor.white),
                                           ),
-                                          hintStyle: TextStyle(color: Colors.grey[400]),
+                                          hintStyle: TextStyle(
+                                              color: AppColor.greyLight),
                                         ),
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: AppColor.white),
                                       ),
-                                      const SizedBox(height: 50,),
+                                      const SizedBox(
+                                        height: 50,
+                                      ),
                                       Row(
                                         children: [
-                                          Text("Password",style: TextStyle(color: Colors.white,fontSize: 15),),
+                                          Text(
+                                            AppStrings.password,
+                                            style: TextStyle(
+                                                color: AppColor.white,
+                                                fontSize: 15),
+                                          ),
                                         ],
                                       ),
                                       TextFormField(
-                                        controller:_password,
-                                        focusNode: password,
-                                        obscureText: visibility,
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        style: TextStyle(color: Colors.white),
-                                        onFieldSubmitted: (value){
-                                          FocusScope.of(context).requestFocus(email);
+                                        controller: _password,
+                                        focusNode: passwordSignup,
+                                        obscureText: visibilityPassword,
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        style: TextStyle(color: AppColor.white),
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context)
+                                              .requestFocus(emailSignup);
                                         },
-                                        validator: (value){
-                                          if(value == null || value.isEmpty){
-                                            return "Please a valid password";
-                                          }else if(value.length < 8){
-                                            return "Password must be greater than 8 digit";
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return AppStrings
+                                                .enterValidPassword;
+                                          } else if (value.length < 8) {
+                                            return AppStrings
+                                                .enter8digitPassword;
                                           }
                                           return null;
                                         },
-                                        decoration:  InputDecoration(
-                                          hintText: "Enter Password",
-                                          fillColor: Colors.white,
+                                        decoration: InputDecoration(
+                                          hintText: AppStrings.password,
+                                          fillColor: AppColor.white,
                                           enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
+                                            borderSide: BorderSide(
+                                                color: AppColor.white),
                                           ),
-                                          hintStyle: TextStyle(color: Colors.grey[400]),
-                                          suffixIcon: IconButton(onPressed: _pass_vis, icon: Icon(Icons.remove_red_eye),color: Colors.white,),
+                                          hintStyle: TextStyle(
+                                              color: AppColor.greyLight),
+                                          suffixIcon: IconButton(
+                                            onPressed: _togglePassword,
+                                            icon: const Icon(
+                                                Icons.remove_red_eye),
+                                            color: AppColor.white,
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 50,),
+                                      const SizedBox(
+                                        height: 50,
+                                      ),
                                       Row(
                                         children: [
-                                          Text("Email",style: TextStyle(color: Colors.white,fontSize: 15),),
+                                          Text(
+                                            AppStrings.email,
+                                            style: TextStyle(
+                                                color: AppColor.white,
+                                                fontSize: 15),
+                                          ),
                                         ],
                                       ),
                                       TextFormField(
-                                        controller:_email,
-                                        focusNode: email,
-                                        keyboardType: TextInputType.emailAddress,
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        style: TextStyle(color: Colors.white),
-                                        onFieldSubmitted: (value){
-                                          FocusScope.of(context).requestFocus(contact);
+                                        controller: _email,
+                                        focusNode: emailSignup,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        style: TextStyle(color: AppColor.white),
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context)
+                                              .requestFocus(contactSignup);
                                         },
                                         validator: _validateEmail,
                                         decoration: InputDecoration(
-                                          hintText: "Enter an Email Id",
+                                          hintText: AppStrings.enterEmail,
                                           enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
+                                            borderSide: BorderSide(
+                                                color: AppColor.white),
                                           ),
-                                          hintStyle: TextStyle(color: Colors.grey[400]),
+                                          hintStyle: TextStyle(
+                                              color: AppColor.greyLight),
                                         ),
                                       ),
-                                      const SizedBox(height: 50,),
+                                      const SizedBox(height: 50),
                                       Row(
                                         children: [
-                                          Text("Contact",style: TextStyle(color: Colors.white,fontSize: 15),),
+                                          Text(
+                                            AppStrings.contact,
+                                            style: TextStyle(
+                                                color: AppColor.greyLight,
+                                                fontSize: 15),
+                                          ),
                                         ],
                                       ),
                                       TextFormField(
-                                        controller:_contact,
-                                        focusNode: contact,
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        controller: _contact,
+                                        focusNode: contactSignup,
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
                                         keyboardType: TextInputType.phone,
                                         maxLines: 1,
                                         maxLength: 10,
-                                        style: TextStyle(color: Colors.white),
-                                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                        onFieldSubmitted: (value){
-                                          FocusScope.of(context).requestFocus(fnode3);
+                                        style: TextStyle(color: AppColor.white),
+                                        maxLengthEnforcement:
+                                            MaxLengthEnforcement.enforced,
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context)
+                                              .requestFocus(submitLogin);
                                         },
-                                        validator: (value){
-                                          if(value == null || value.isEmpty){
-                                            return "Please enter a valid Contact number.";
-                                          }else if(value.length < 10){
-                                            return "Please Enter a valid phone number";
-                                          }else{
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return AppStrings.enterValidContact;
+                                          } else if (value.length < 10) {
+                                            return AppStrings.enterValidContact;
+                                          } else {
                                             return null;
                                           }
                                         },
                                         decoration: InputDecoration(
-                                          hintText: "Enter Contact",
+                                          hintText: AppStrings.enterContact,
                                           enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
+                                            borderSide: BorderSide(
+                                                color: AppColor.white),
                                           ),
-                                          hintStyle: TextStyle(color: Colors.grey[400]),
+                                          hintStyle: TextStyle(
+                                              color: AppColor.greyLight),
                                         ),
                                       ),
-                                      const SizedBox(height: 20,),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
                                       Container(
-                                        margin: EdgeInsets.all(20),
+                                        margin: const EdgeInsets.all(20),
                                         width: double.infinity,
                                         height: 50,
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
-                                            colors: [Colors.lightBlue,Colors.blue,Colors.blueAccent,Colors.deepPurpleAccent,Colors.deepPurple],
+                                            colors: [
+                                              AppColor.blueLight,
+                                              AppColor.blue,
+                                              AppColor.blueAccent,
+                                              AppColor.purpleLight,
+                                              AppColor.purpleDark
+                                            ],
                                             begin: FractionalOffset.topLeft,
                                             end: FractionalOffset.bottomRight,
                                           ),
                                         ),
                                         child: TextButton(
                                           child: Text(
-                                            'Submit',
-                                            style: TextStyle(color: Colors.white),
+                                            AppStrings.submit,
+                                            style: TextStyle(
+                                                color: AppColor.white),
                                           ),
                                           onPressed: () {
-                                            if(_formKey2.currentState!.validate()){
-                                              print("Everything is OK!!");
+                                            if (_signupFormKey.currentState!
+                                                .validate()) {
+                                              print(AppStrings.successful);
                                             }
                                           },
                                         ),
@@ -353,17 +439,14 @@ class login_signup_state extends State<login_signup>{
             children: [
               Expanded(
                 child: AnimatedContainer(
-                  margin: EdgeInsets.fromLTRB(0, h3 ,0, 0),
-                  constraints: BoxConstraints.expand(),
-                  //height: 500,
-                  //width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.fromLTRB(0, h3, 0, 0),
+                  constraints: const BoxConstraints.expand(),
                   decoration: BoxDecoration(
-                    color: Colors.transparent,
+                    color: AppColor.transparent,
                   ),
-                  //curve: Curves.fastOutSlowIn,
-                  duration: new Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height,
                       child: Column(
@@ -372,99 +455,132 @@ class login_signup_state extends State<login_signup>{
                             child: SizedBox(
                               height: 50,
                               child: CustomPaint(
-                                painter: draw_curve(background_color: Colors.white),
-                                size: Size(MediaQuery.of(context).size.width,50),
+                                painter:
+                                    DrawCurve(backgroundColor: AppColor.white),
+                                size:
+                                    Size(MediaQuery.of(context).size.width, 50),
                               ),
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              constraints: BoxConstraints.expand(),
-                              //height: 500,
-                              //width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  color: Colors.white
-                              ),
+                              constraints: const BoxConstraints.expand(),
+                              decoration: BoxDecoration(color: AppColor.white),
                               child: SingleChildScrollView(
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 30, 20, 0),
                                   child: Form(
-                                    key: _formKey,
+                                    key: _loginFormKey,
                                     child: Column(
                                       children: [
                                         Row(
                                           children: [
-                                            Text("Username"),
+                                            Text(AppStrings.username),
                                           ],
                                         ),
                                         TextFormField(
-                                          controller: _txt1,
-                                          focusNode: fnode1,
-                                          onFieldSubmitted: (value){
-                                            FocusScope.of(context).requestFocus(fnode2);
+                                          controller: _usernamelogin,
+                                          focusNode: emailLogin,
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(context)
+                                                .requestFocus(passwordLogin);
                                           },
                                           validator: _validateEmail,
-                                          decoration: const InputDecoration(
-                                            hintText: "Enter Email-id",
+                                          decoration: InputDecoration(
+                                            hintText: AppStrings.enterEmail,
                                           ),
                                         ),
-                                        const SizedBox(height: 30,),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
                                         Row(
                                           children: [
-                                            Text("Password"),
+                                            Text(AppStrings.password),
                                           ],
                                         ),
                                         TextFormField(
-                                          controller:_txt2,
-                                          focusNode: fnode2,
-                                          obscureText: visibility2,
-                                          autovalidateMode: AutovalidateMode.disabled,
-                                          onFieldSubmitted: (value){
-                                            FocusScope.of(context).requestFocus(fnode3);
+                                          controller: _passwordlogin,
+                                          focusNode: passwordLogin,
+                                          obscureText: visibilityPassSignup,
+                                          autovalidateMode:
+                                              AutovalidateMode.disabled,
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(context)
+                                                .requestFocus(submitLogin);
                                           },
-                                          validator: (value){
-                                            if(value == null || value.isEmpty){
-                                              return "Please enter a valid password";
-                                            }else if(value.length < 8){
-                                              return "Please enter a valid password";
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return AppStrings
+                                                  .enterValidPassword;
+                                            } else if (value.length < 8) {
+                                              return AppStrings
+                                                  .enter8digitPassword;
                                             }
                                             return null;
                                           },
                                           decoration: InputDecoration(
-                                            hintText: "Enter Password",
-                                            suffixIcon: IconButton(onPressed: _pass_vis2, icon: Icon(Icons.remove_red_eye),),
+                                            hintText: AppStrings.enterPassword,
+                                            suffixIcon: IconButton(
+                                              onPressed: _togglePasswordSignUp,
+                                              icon: const Icon(
+                                                  Icons.remove_red_eye),
+                                            ),
                                           ),
                                         ),
                                         Container(
-                                          margin: EdgeInsets.all(20),
+                                          margin: const EdgeInsets.all(20),
                                           width: double.infinity,
                                           height: 50,
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
-                                              colors: [Colors.lightBlue,Colors.blue,Colors.blueAccent,Colors.deepPurpleAccent,Colors.deepPurple],
+                                              colors: [
+                                                AppColor.blueLight,
+                                                AppColor.blue,
+                                                AppColor.blueAccent,
+                                                AppColor.purpleLight,
+                                                AppColor.purpleDark
+                                              ],
                                               begin: FractionalOffset.topLeft,
                                               end: FractionalOffset.bottomRight,
                                             ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.deepPurpleAccent,
+                                                color: AppColor.purpleLight,
                                                 blurRadius: 10,
                                                 spreadRadius: 0.1,
-                                                offset: Offset(0,3),
+                                                offset: const Offset(0, 3),
                                               ),
                                             ],
                                           ),
                                           child: TextButton(
                                             child: Text(
-                                              'Login',
-                                              style: TextStyle(color: Colors.white),
+                                              AppStrings.login,
+                                              style: TextStyle(
+                                                  color: AppColor.white),
                                             ),
                                             onPressed: () {
-                                              if(_formKey.currentState!.validate()){
-                                                print("Everything is OK!!");
+                                              if (_loginFormKey.currentState!
+                                                  .validate()) {
+                                                print(AppStrings.successful);
                                               }
                                             },
                                           ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {},
+                                              child: Text(
+                                                AppStrings.forgetPassword,
+                                                style: TextStyle(
+                                                    color: AppColor.greyLight),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -486,21 +602,26 @@ class login_signup_state extends State<login_signup>{
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: display_text ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account? "),
-                      GestureDetector(
-                        onTap: (){
-                          FocusScope.of(context).requestFocus(uname);
-                          change_size();
-                        },
-                        child: Text("Sign Up",style: TextStyle(color: Colors.blue[900]),),
-                      ),
-                    ],
-                  ) : null
-                )
+                    padding: const EdgeInsets.all(30.0),
+                    child: displayText
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(AppStrings.donthaveaccount),
+                              GestureDetector(
+                                onTap: () {
+                                  FocusScope.of(context)
+                                      .requestFocus(unameSignup);
+                                  changeSize();
+                                },
+                                child: Text(
+                                  AppStrings.signup,
+                                  style: TextStyle(color: AppColor.blueDark),
+                                ),
+                              ),
+                            ],
+                          )
+                        : null)
               ],
             ),
           ),
@@ -508,32 +629,4 @@ class login_signup_state extends State<login_signup>{
       ),
     );
   }
-}
-
-class draw_curve extends CustomPainter{
-  Color background_color;  // Specify the color of wave
-
-  draw_curve({required this.background_color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-      var paint = Paint();
-      paint.color = background_color;
-      paint.style = PaintingStyle.fill;
-
-      var path = Path();
-      path.moveTo(0, size.height*0.9);
-      path.cubicTo(0, size.height, size.width*-0.15, size.height*-0.3, size.width*0.45, size.height*0.65);   //This will create first arc
-      path.cubicTo(size.width*0.75, size.height*0.9, size.width*0.85, size.height*-0.3, size.width, size.height*0.8); //For second arc.
-      path.lineTo(size.width, size.height);
-      path.lineTo(0, size.height);
-
-      canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-
 }
