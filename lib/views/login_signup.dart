@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:signup_module/colors.dart';
-import 'package:signup_module/components/wave.dart';
-import 'package:signup_module/images.dart';
-import 'package:signup_module/strings.dart';
+import '../components/wave.dart';
+import '../images.dart';
+import '../strings.dart';
 
 class LoginSignup extends StatefulWidget {
   const LoginSignup({Key? key}) : super(key: key);
@@ -28,15 +28,16 @@ class LoginSignupState extends State<LoginSignup> {
   FocusNode contactSignup = FocusNode();
   final _loginFormKey = GlobalKey<FormState>();
   final _signupFormKey = GlobalKey<FormState>();
-  late double h1, h2, h3;
 
   /// this will be used for setting margin over waves
-  bool firstPane = true;
+  late double h1, h2, h3;
 
   /// true if first page is open, false if close.
+  bool firstPane = true;
+
+  /// ///onstart is only set once,
   bool onStart = true;
 
-  ///onstart is only set once,
   bool displayText = true;
   bool visibilityPassword = true;
   bool visibilityPassSignup = true;
@@ -105,20 +106,17 @@ class LoginSignupState extends State<LoginSignup> {
           SizedBox(
               height: double.infinity,
               width: double.infinity,
-              child: Image.asset(
-                AppImages.mountain,
-                fit: BoxFit.fill,
-              )),
+              child: Image.asset(AppImages.mountain, fit: BoxFit.fill)),
           Column(
             children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(
                     25, MediaQuery.of(context).size.height * 0.15, 20, 20),
                 child: Row(
-                  children: [
+                  children: const [
                     Text(
                       AppStrings.chalet,
-                      style: const TextStyle(fontSize: 30),
+                      style: TextStyle(fontSize: 30),
                     ),
                   ],
                 ),
@@ -132,9 +130,7 @@ class LoginSignupState extends State<LoginSignup> {
                   margin: EdgeInsets.fromLTRB(0, h1, 0, 0),
                   constraints: BoxConstraints.loose(
                       Size(MediaQuery.of(context).size.width, 1000)),
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                  ),
+                  decoration: const BoxDecoration(color: Colors.transparent),
                   duration: const Duration(milliseconds: 500),
                   child: Column(
                     children: [
@@ -162,29 +158,26 @@ class LoginSignupState extends State<LoginSignup> {
                 child: AnimatedContainer(
                   margin: EdgeInsets.fromLTRB(0, h2, 0, 0),
                   constraints: const BoxConstraints.expand(),
-                  decoration: BoxDecoration(
-                    color: AppColor.transparent,
-                  ),
+                  decoration: const BoxDecoration(color: AppColor.transparent),
                   duration: const Duration(milliseconds: 500),
                   child: Column(
                     children: [
                       CustomPaint(
-                        painter:
-                            DrawCurve(backgroundColor: Colors.deepPurpleAccent),
-                        size: Size(MediaQuery.of(context).size.width, 50),
-                      ),
+                          painter: DrawCurve(
+                              backgroundColor: Colors.deepPurpleAccent),
+                          size: Size(MediaQuery.of(context).size.width, 50)),
                       Expanded(
                         child: Container(
                           constraints: const BoxConstraints.expand(),
                           decoration:
-                              BoxDecoration(color: AppColor.purpleLight),
+                              const BoxDecoration(color: AppColor.purpleLight),
                           child: SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
                               child: Theme(
                                 data: ThemeData(
                                   primaryColor: AppColor.white,
-                                  textTheme: TextTheme(
+                                  textTheme: const TextTheme(
                                     bodyText2: TextStyle(color: AppColor.white),
                                   ),
                                 ),
@@ -197,19 +190,18 @@ class LoginSignupState extends State<LoginSignup> {
                                             MainAxisAlignment.start,
                                         children: [
                                           IconButton(
-                                            onPressed: () {
-                                              FocusScope.of(context)
-                                                  .requestFocus(emailLogin);
-                                              changeSize();
-                                            },
-                                            icon: const Icon(
-                                                Icons.arrow_back_ios),
-                                            color: AppColor.white,
-                                          ),
+                                              onPressed: () {
+                                                FocusScope.of(context)
+                                                    .requestFocus(emailLogin);
+                                                changeSize();
+                                              },
+                                              icon: const Icon(
+                                                  Icons.arrow_back_ios),
+                                              color: AppColor.white),
                                         ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(15.0),
+                                      const Padding(
+                                        padding: EdgeInsets.all(15.0),
                                         child: Text(
                                           AppStrings.welcome,
                                           style: TextStyle(
@@ -218,7 +210,7 @@ class LoginSignupState extends State<LoginSignup> {
                                         ),
                                       ),
                                       Row(
-                                        children: [
+                                        children: const [
                                           Text(
                                             AppStrings.username,
                                             style: TextStyle(
@@ -246,20 +238,20 @@ class LoginSignupState extends State<LoginSignup> {
                                         },
                                         decoration: InputDecoration(
                                           hintText: AppStrings.username,
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: AppColor.white),
                                           ),
                                           hintStyle: TextStyle(
                                               color: AppColor.greyLight),
                                         ),
-                                        style: TextStyle(color: AppColor.white),
+                                        style: const TextStyle(
+                                            color: AppColor.white),
                                       ),
-                                      const SizedBox(
-                                        height: 50,
-                                      ),
+                                      const SizedBox(height: 50),
                                       Row(
-                                        children: [
+                                        children: const [
                                           Text(
                                             AppStrings.password,
                                             style: TextStyle(
@@ -274,7 +266,8 @@ class LoginSignupState extends State<LoginSignup> {
                                         obscureText: visibilityPassword,
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
-                                        style: TextStyle(color: AppColor.white),
+                                        style: const TextStyle(
+                                            color: AppColor.white),
                                         onFieldSubmitted: (value) {
                                           FocusScope.of(context)
                                               .requestFocus(emailSignup);
@@ -292,7 +285,8 @@ class LoginSignupState extends State<LoginSignup> {
                                         decoration: InputDecoration(
                                           hintText: AppStrings.password,
                                           fillColor: AppColor.white,
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: AppColor.white),
                                           ),
@@ -306,11 +300,9 @@ class LoginSignupState extends State<LoginSignup> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 50,
-                                      ),
+                                      const SizedBox(height: 50),
                                       Row(
-                                        children: [
+                                        children: const [
                                           Text(
                                             AppStrings.email,
                                             style: TextStyle(
@@ -326,7 +318,8 @@ class LoginSignupState extends State<LoginSignup> {
                                             TextInputType.emailAddress,
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
-                                        style: TextStyle(color: AppColor.white),
+                                        style: const TextStyle(
+                                            color: AppColor.white),
                                         onFieldSubmitted: (value) {
                                           FocusScope.of(context)
                                               .requestFocus(contactSignup);
@@ -334,7 +327,8 @@ class LoginSignupState extends State<LoginSignup> {
                                         validator: _validateEmail,
                                         decoration: InputDecoration(
                                           hintText: AppStrings.enterEmail,
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: AppColor.white),
                                           ),
@@ -361,7 +355,8 @@ class LoginSignupState extends State<LoginSignup> {
                                         keyboardType: TextInputType.phone,
                                         maxLines: 1,
                                         maxLength: 10,
-                                        style: TextStyle(color: AppColor.white),
+                                        style: const TextStyle(
+                                            color: AppColor.white),
                                         maxLengthEnforcement:
                                             MaxLengthEnforcement.enforced,
                                         onFieldSubmitted: (value) {
@@ -379,7 +374,8 @@ class LoginSignupState extends State<LoginSignup> {
                                         },
                                         decoration: InputDecoration(
                                           hintText: AppStrings.enterContact,
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: AppColor.white),
                                           ),
@@ -387,14 +383,12 @@ class LoginSignupState extends State<LoginSignup> {
                                               color: AppColor.greyLight),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
+                                      const SizedBox(height: 20),
                                       Container(
                                         margin: const EdgeInsets.all(20),
                                         width: double.infinity,
                                         height: 50,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           gradient: LinearGradient(
                                             colors: [
                                               AppColor.blueLight,
@@ -408,7 +402,7 @@ class LoginSignupState extends State<LoginSignup> {
                                           ),
                                         ),
                                         child: TextButton(
-                                          child: Text(
+                                          child: const Text(
                                             AppStrings.submit,
                                             style: TextStyle(
                                                 color: AppColor.white),
@@ -441,7 +435,7 @@ class LoginSignupState extends State<LoginSignup> {
                 child: AnimatedContainer(
                   margin: EdgeInsets.fromLTRB(0, h3, 0, 0),
                   constraints: const BoxConstraints.expand(),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColor.transparent,
                   ),
                   duration: const Duration(milliseconds: 500),
@@ -465,7 +459,8 @@ class LoginSignupState extends State<LoginSignup> {
                           Expanded(
                             child: Container(
                               constraints: const BoxConstraints.expand(),
-                              decoration: BoxDecoration(color: AppColor.white),
+                              decoration:
+                                  const BoxDecoration(color: AppColor.white),
                               child: SingleChildScrollView(
                                 child: Padding(
                                   padding:
@@ -475,8 +470,8 @@ class LoginSignupState extends State<LoginSignup> {
                                     child: Column(
                                       children: [
                                         Row(
-                                          children: [
-                                            Text(AppStrings.username),
+                                          children: const [
+                                            Text(AppStrings.username)
                                           ],
                                         ),
                                         TextFormField(
@@ -487,16 +482,13 @@ class LoginSignupState extends State<LoginSignup> {
                                                 .requestFocus(passwordLogin);
                                           },
                                           validator: _validateEmail,
-                                          decoration: InputDecoration(
-                                            hintText: AppStrings.enterEmail,
-                                          ),
+                                          decoration: const InputDecoration(
+                                              hintText: AppStrings.enterEmail),
                                         ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
+                                        const SizedBox(height: 30),
                                         Row(
-                                          children: [
-                                            Text(AppStrings.password),
+                                          children: const [
+                                            Text(AppStrings.password)
                                           ],
                                         ),
                                         TextFormField(
@@ -533,7 +525,7 @@ class LoginSignupState extends State<LoginSignup> {
                                           margin: const EdgeInsets.all(20),
                                           width: double.infinity,
                                           height: 50,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             gradient: LinearGradient(
                                               colors: [
                                                 AppColor.blueLight,
@@ -550,12 +542,12 @@ class LoginSignupState extends State<LoginSignup> {
                                                 color: AppColor.purpleLight,
                                                 blurRadius: 10,
                                                 spreadRadius: 0.1,
-                                                offset: const Offset(0, 3),
+                                                offset: Offset(0, 3),
                                               ),
                                             ],
                                           ),
                                           child: TextButton(
-                                            child: Text(
+                                            child: const Text(
                                               AppStrings.login,
                                               style: TextStyle(
                                                   color: AppColor.white),
@@ -607,7 +599,7 @@ class LoginSignupState extends State<LoginSignup> {
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(AppStrings.donthaveaccount),
+                              const Text(AppStrings.donthaveaccount),
                               GestureDetector(
                                 onTap: () {
                                   FocusScope.of(context)

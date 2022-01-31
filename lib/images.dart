@@ -1,4 +1,4 @@
 
 class AppImages{
-  static String mountain = "lib/assets/mountain.jpg";
+  static const String mountain = "lib/assets/mountain.jpg";
 }
